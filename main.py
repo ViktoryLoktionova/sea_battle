@@ -26,7 +26,6 @@ enemy_ships2 = [[0 for i in range(s_x + 1)] for i in
                range(s_y + 1)]
 list_ids = [] #список отрисованных объектов
 
-
 # points1 - список, куда мы кликнули мышкой
 points1 = [[-1 for i in range(s_x)] for i in range(s_y)]
 points2 = [[-1 for i in range(s_x)] for i in range(s_y)]
@@ -36,6 +35,7 @@ boom = [[0 for i in range(s_x)] for i in range(s_y)]
 
 ships_list = [] #список кораблей игрока 1 и игрока 2
 # print(enemy_ships1)
+hod_igrovomu_polu_1 = False # есть True, ходит игрок 1б иначе - игрок 2
 
 
 def on_closing():
@@ -68,10 +68,27 @@ draw_table(size_canvas_x + menu_x)
 
 t0 = Label(tk, text = "Игрок 1", font = ("Helvetica", 16))
 t0.place(x=size_canvas_x//2 - t0.winfo_reqwidth()//2, y=size_canvas_y+3)
+
 t1 = Label(tk, text = "Игрок 2", font = ("Helvetica", 16))
 t1.place(x=size_canvas_x + menu_x + size_canvas_x//2 - t1.winfo_reqwidth()//2, y=size_canvas_y+3)
+
 t0.configure(bg="red")
 t0.configure(bg="#f0f0f0")
+
+t3 = Label(tk, text = "#######", font = ("Helvetica", 16))
+t3.place(x=size_canvas_x + 1 * step_x, y= 6 * step_y)
+
+def mark_igrok(igrok_mark_1):
+    if igrok_mark_1:
+        t0.configure(bg="red")
+        t1.configure(bg="#f0f0f0")
+        t3.configure(text="Ход игрока 2")
+    else:
+        t1.configure(bg="red")
+        t0.configure(bg="#f0f0f0")
+        t3.configure(text="Ход игрока 1")
+mark_igrok(hod_igrovomu_polu_1)
+
 
 def button_show_enemy1():
     for i in range (0,s_x):
@@ -182,7 +199,7 @@ def check_winner2_igrok_2():
     return win
 
 def add_to_all(event):
-    global points1, points2
+    global points1, points2, hod_igrovomu_polu_1
     _type = 0  # левая кнопка мыши
     if event.num == 3:
         _type = 1  # правая кнопка мыши
@@ -192,14 +209,15 @@ def add_to_all(event):
     # print(mouse_x, mouse_y)
     ip_x = mouse_x // step_x
     ip_y = mouse_y // step_y
-
     print(ip_x, ip_y, "_type", _type)
-    if ip_x < s_x and ip_y < s_y:
+    if ip_x < s_x and ip_y < s_y and hod_igrovomu_polu_1: #первое игровое поле
         if points1[ip_y][ip_x] == -1:
             points1[ip_y][ip_x] = _type
+            hod_igrovomu_polu_1 = False
             draw_point(ip_x, ip_y)
             #if check_winner(ip_x, ip_y):
             if check_winner2():
+                hod_igrovomu_polu_1 = True
                 winner = "Игрок 2 победил!"
                 print(winner)
                 points1 = [[10 for i in range(s_x)] for i in range(s_y)]
@@ -216,13 +234,15 @@ def add_to_all(event):
         # draw_point(ip_x, ip_y)
         #print(len(list_ids))
 
-    if ip_x >= s_x + delta_menu_x and ip_x <= s_x + s_x + delta_menu_x and ip_y < s_y:
+    if ip_x >= s_x + delta_menu_x and ip_x <= s_x + s_x + delta_menu_x and ip_y < s_y and not hod_igrovomu_polu_1: #второе игровое поле
         print ("Ok")
         if points2[ip_y][ip_x - s_x - delta_menu_x] == -1:
             points2[ip_y][ip_x - s_x - delta_menu_x] = _type
+            hod_igrovomu_polu_1 = True
             draw_point2(ip_x - s_x - delta_menu_x, ip_y)
             #if check_winner(ip_x, ip_y):
             if check_winner2_igrok_2():
+                hod_igrovomu_polu_1 = False
                 winner = "Игрок 1 победил!"
                 print(winner)
                 points1 = [[10 for i in range(s_x)] for i in range(s_y)]
@@ -237,6 +257,7 @@ def add_to_all(event):
                 list_ids.append(id2)
                 id3 = canvas.create_text(step_x * 14, step_y * 7, text=winner, font=("Arial", 20), justify=CENTER)
                 list_ids.append(id3)
+    mark_igrok(hod_igrovomu_polu_1)
 
 canvas.bind_all("<Button-1>", add_to_all)  # левая кнопка мыши
 canvas.bind_all("<Button-3>", add_to_all)  # правая кнопка мыши
