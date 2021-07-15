@@ -8,12 +8,18 @@ app_running = True
 
 size_canvas_x = 300
 size_canvas_y = 300
-s_x = s_y = 10  # размер игрового поля
+s_x = s_y = 8  # размер игрового поля
 step_x = size_canvas_x // s_x  # шаг по горизонтали
 step_y = size_canvas_y // s_y  # шаг по вертикали
 size_canvas_x = step_x * s_x
 size_canvas_y = step_y * s_y
-delta_menu_x = 8
+
+txt_len_middle = "* Человек/компьютер"
+size_font_x = 10
+len_txt_x = len(txt_len_middle) * size_font_x
+print(len_txt_x)
+
+delta_menu_x = len_txt_x // step_x + 1
 menu_x = step_x * delta_menu_x #250
 menu_y = 40
 ships = s_x // 2  # определяем максимальное количество кораблей
@@ -103,8 +109,8 @@ def change_rb():
 rb_var = BooleanVar()
 rb1 = Radiobutton(tk, text = "Человек/компьютер", variable = rb_var, value = 1, command = change_rb)
 rb2 = Radiobutton(tk, text = "Человек/Человек", variable = rb_var, value = 0, command = change_rb)
-rb1.place(x = size_canvas_x + 20, y = 140)
-rb2.place(x = size_canvas_x + 20, y = 160)
+rb1.place(x = size_canvas_x + menu_x//2 - rb1.winfo_reqwidth()//2, y = 140)
+rb2.place(x = size_canvas_x + menu_x//2 - rb2.winfo_reqwidth()//2, y = 160)
 if computer_vs_human:
     rb1.select()
 
@@ -166,14 +172,14 @@ def button_begin_again():
     boom = [[0 for i in range(s_x)] for i in range(s_y)]
 
 
-b0 = Button(tk, text="Показать корабли игрока 1", command=button_show_enemy1)
-b0.place(x=size_canvas_x + 20, y=30)
+b0 = Button(tk, text="Показать корабли \n игрока 1", command=button_show_enemy1)
+b0.place(x=size_canvas_x + menu_x//2 - b0.winfo_reqwidth()//2, y=10)
 
-b1 = Button(tk, text="Показать корабли игрока 2", command=button_show_enemy2)
-b1.place(x=size_canvas_x + 20, y=70)
+b1 = Button(tk, text="Показать корабли \n игрока 2", command=button_show_enemy2)
+b1.place(x=size_canvas_x + menu_x//2 - b1.winfo_reqwidth()//2, y=60)
 
 b2 = Button(tk, text="Начать заново", command=button_begin_again)
-b2.place(x=size_canvas_x + 20, y=110)
+b2.place(x=size_canvas_x + menu_x//2 - b2.winfo_reqwidth()//2, y=110)
 
 
 def draw_point(x, y):
@@ -291,13 +297,13 @@ def add_to_all(event):
                 print(winner)
                 points1 = [[10 for i in range(s_x)] for i in range(s_y)]
                 points2 = [[10 for i in range(s_x)] for i in range(s_y)]
-                id1 = canvas.create_rectangle(step_x * 5, step_y * 5, size_canvas_x + menu_x + size_canvas_x - step_x * 5, size_canvas_y - step_y, fill="yellow")
+                id1 = canvas.create_rectangle(step_x * 5, size_canvas_y//2, size_canvas_x + menu_x + size_canvas_x - step_x * 5, size_canvas_y - step_y, fill="yellow")
                 list_ids.append(id1)
-                id2 = canvas.create_rectangle(step_x * 5 + step_x//2, step_y * 5 + step_y//2,
+                id2 = canvas.create_rectangle(step_x * 5 + step_x//2, size_canvas_y//2 + step_y//2,
                                               size_canvas_x + menu_x + size_canvas_x - step_x * 5 - step_x//2,
                                               size_canvas_y - step_y - step_y//2, fill="white")
                 list_ids.append(id2)
-                id3 = canvas.create_text(step_x * 14, step_y * 7, text = winner, font = ("Arial", 20), justify=CENTER)
+                id3 = canvas.create_text(size_canvas_x + menu_x//2, size_canvas_y//2 + step_y + step_y//4, text = winner, font = ("Arial", 20), justify=CENTER)
                 list_ids.append(id3)
 
         # draw_point(ip_x, ip_y)
@@ -316,15 +322,16 @@ def add_to_all(event):
                 print(winner)
                 points1 = [[10 for i in range(s_x)] for i in range(s_y)]
                 points2 = [[10 for i in range(s_x)] for i in range(s_y)]
-                id1 = canvas.create_rectangle(step_x * 5, step_y * 5,
+                id1 = canvas.create_rectangle(step_x * 5, size_canvas_y // 2,
                                               size_canvas_x + menu_x + size_canvas_x - step_x * 5,
                                               size_canvas_y - step_y, fill="yellow")
                 list_ids.append(id1)
-                id2 = canvas.create_rectangle(step_x * 5 + step_x // 2, step_y * 5 + step_y // 2,
+                id2 = canvas.create_rectangle(step_x * 5 + step_x // 2, size_canvas_y // 2 + step_y // 2,
                                               size_canvas_x + menu_x + size_canvas_x - step_x * 5 - step_x // 2,
                                               size_canvas_y - step_y - step_y // 2, fill="white")
                 list_ids.append(id2)
-                id3 = canvas.create_text(step_x * 14, step_y * 7, text=winner, font=("Arial", 20), justify=CENTER)
+                id3 = canvas.create_text(size_canvas_x + menu_x // 2, size_canvas_y // 2 + step_y + step_y // 4,
+                                         text=winner, font=("Arial", 20), justify=CENTER)
                 list_ids.append(id3)
             elif computer_vs_human:
                 mark_igrok(hod_igrovomu_polu_1)
